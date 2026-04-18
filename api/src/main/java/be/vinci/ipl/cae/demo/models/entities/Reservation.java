@@ -19,6 +19,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User client;
+
     @Column(nullable = false)
     private LocalDateTime reservationDate;
 
