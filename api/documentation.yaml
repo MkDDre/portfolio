@@ -1,297 +1,225 @@
 openapi: 3.1.0
 info:
-  title: CAE exercices demo API
-  description: API de démonstration pour le cours de CAE exercices
+  title: Portfolio API
+  description: API Spring Boot pour auth, services et reservations.
   version: 1.0.0
 servers:
-  - url: 'http://localhost:3000'
+  - url: http://localhost:3000
+
+security:
+  - bearerAuth: []
+
 paths:
-
-  /auths/login:
+  /auth/register:
     post:
-      summary: Connexion
-      description: Connexion d'un utilisateur
+      tags: [Auth]
+      summary: Inscrire un client
+      security: []
       requestBody:
         required: true
-        description: Identifiants de connexion
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
         '200':
-          description: Connexion réussie
+          description: Utilisateur inscrit
           content:
             application/json:
-              description: Token de connexion JWT
               schema:
-                $ref: '#/components/schemas/AuthenticatedUser'
+                $ref: '#/components/schemas/AuthResponse'
         '400':
-          description: Requête mal formée
-        '401':
-          description: Identifiants incorrects
-
-  /auths/register:
-    post:
-      summary: Inscription
-      description: Inscription d'un utilisateur
-      requestBody:
-        required: true
-        description: Identifiants de l'utilisateur
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Credentials'
-      responses:
-        '200':
-          description: Inscription réussie, renvoie un token JWT
+          description: Requete invalide
           content:
             application/json:
-              description: Token de connexion JWT
               schema:
-                $ref: '#/components/schemas/AuthenticatedUser'
-        '400':
-          description: Requête mal formée
+                $ref: '#/components/schemas/ApiError'
         '409':
-          description: Utilisateur déjà existant
+          description: Email deja utilise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 
-  /pizzas:
-
-    get:
-      summary: Liste des pizzas
-      description: Récupération de la liste des pizzas
-      parameters:
-        - name: order
-          in: query
-          required: false
-          description: Ordre de tri, par titre ascendant (+title) ou descendant (-title)
-          schema:
-            type: string
-            enum: [+title, -title]
-            example: +title
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Se connecter
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
       responses:
         '200':
-          description: Liste des pizzas
+          description: Authentification reussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Requete invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Credentials invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /service:
+    post:
+      tags: [Service]
+      summary: Creer un service
+      description: Accessible uniquement aux SERVICE_PROVIDER.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '201':
+          description: Service cree
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '403':
+          description: Acces refuse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /service/{id}:
+    get:
+      tags: [Service]
+      summary: Recuperer un service
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Service trouve
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '404':
+          description: Service introuvable
+
+  /service/validated/all:
+    get:
+      tags: [Service]
+      summary: Lister les services valides
+      responses:
+        '200':
+          description: Liste des services valides
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pizza'
+                  $ref: '#/components/schemas/Service'
 
-    post:
-      summary: Créer une pizza
-      description: Création d'une nouvelle pizza
-      security:
-        - bearerAuth:
-            - admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewPizza'
-      responses:
-        '200':
-          description: Pizza créée
-          content:
-            application/json:
-              description: Détails de la pizza créée
-              schema:
-                $ref: '#/components/schemas/Pizza'
-        '400':
-          description: Requête mal formée
-        '403':
-          description: Non authentifié
-
-  /pizzas/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID de la pizza
-        schema:
-          type: integer
-          example: 1
-
+  /service/my-services:
     get:
-      summary: Détail d'une pizza
-      description: Récupération du détail d'une pizza
+      tags: [Service]
+      summary: Lister mes services
+      description: Accessible uniquement aux SERVICE_PROVIDER.
       responses:
         '200':
-          description: Détail de la pizza
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pizza'
-        '404':
-          description: Pizza non trouvée
-
-    delete:
-      summary: Supprimer une pizza
-      description: Suppression d'une pizza
-      security:
-        - bearerAuth:
-          - admin
-      responses:
-        '200':
-          description: Pizza supprimée
-          content:
-            application/json:
-              description: Détails de la pizza supprimée
-              schema:
-                $ref: '#/components/schemas/Pizza'
-        '403':
-          description: Non authentifié
-        '404':
-          description: Pizza non trouvée
-
-    patch:
-      summary: Modifier une pizza
-      description: Modification d'une pizza
-      security:
-        - bearerAuth:
-          - admin
-      requestBody:
-        required: true
-        description: Nouveaux détails de la pizza
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewPizza'
-      responses:
-        '200':
-          description: Pizza modifiée
-          content:
-            application/json:
-              description: Détails de la pizza modifiée
-              schema:
-                $ref: '#/components/schemas/Pizza'
-        '400':
-          description: Requête mal formée
-        '403':
-          description: Non authentifié
-        '404':
-          description: Pizza non trouvée
-
-  /drinks:
-
-    get:
-      summary: Liste des boissons
-      description: Récupération de la liste des boissons
-      parameters:
-        - name: budget-max
-          in: query
-          required: false
-          description: Prix maximum accepté
-          schema:
-            type: number
-            example: 2.5
-      responses:
-        '200':
-          description: Liste des boissons
+          description: Liste des services de l'utilisateur courant
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Drink'
+                  $ref: '#/components/schemas/Service'
+        '403':
+          description: Acces refuse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 
+  /reservation:
     post:
-      summary: Créer une boisson
-      description: Création d'une nouvelle boisson
-      security:
-        - bearerAuth:
-          - admin
+      tags: [Reservation]
+      summary: Creer une reservation
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewDrink'
+              $ref: '#/components/schemas/CreateReservationRequest'
       responses:
-        '200':
-          description: Boisson créée
+        '201':
+          description: Reservation creee
           content:
             application/json:
-              description: Détails de la boisson créée
               schema:
-                $ref: '#/components/schemas/Drink'
+                $ref: '#/components/schemas/Reservation'
         '400':
-          description: Requête mal formée
-        '403':
-          description: Non authentifié
-
-  /drinks/{id}:
-
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID de la boisson
-        schema:
-          type: integer
-          example: 1
-
-    get:
-      summary: Détail d'une boisson
-      description: Récupération du détail d'une boisson
-      responses:
-        '200':
-          description: Détail de la boisson
+          description: Requete invalide
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Drink'
+                $ref: '#/components/schemas/ApiError'
         '404':
-          description: Boisson non trouvée
-
-    delete:
-      summary: Supprimer une boisson
-      description: Suppression d'une boisson
-      security:
-        - bearerAuth:
-          - admin
-      responses:
-        '200':
-          description: Boisson supprimée
+          description: Service ou utilisateur introuvable
           content:
             application/json:
-              description: Détails de la boisson supprimée
               schema:
-                $ref: '#/components/schemas/Drink'
-        '403':
-          description: Non authentifié
-        '404':
-          description: Boisson non trouvée
+                $ref: '#/components/schemas/ApiError'
 
+  /reservation/{id}/cancel:
     patch:
-      summary: Modifier une boisson
-      description: Modification d'une boisson
-      security:
-        - bearerAuth:
-          - admin
-      requestBody:
-        required: true
-        description: Nouveaux détails de la boisson
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewDrink'
+      tags: [Reservation]
+      summary: Annuler une reservation
+      description: Annulation possible seulement 48h a l'avance.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
-          description: Boisson modifiée
+          description: Reservation annulee
           content:
             application/json:
-              description: Détails de la boisson modifiée
               schema:
-                $ref: '#/components/schemas/Drink'
+                $ref: '#/components/schemas/Reservation'
         '400':
-          description: Requête mal formée
-        '403':
-          description: Non authentifié
+          description: Delai d'annulation depasse ou reservation deja annulee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '404':
-          description: Boisson non trouvée
+          description: Reservation introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 
 components:
   securitySchemes:
@@ -301,75 +229,110 @@ components:
       bearerFormat: JWT
 
   schemas:
-    Credentials:
+    AuthRequest:
       type: object
+      required: [email, password]
       properties:
-        username:
+        email:
           type: string
-          example: manager
+          format: email
+          example: user@example.com
         password:
           type: string
-          example: manager
-    AuthenticatedUser:
+          example: myStrongPassword
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: new-user@example.com
+        password:
+          type: string
+          example: myStrongPassword
+
+    AuthResponse:
       type: object
       properties:
-        username:
+        email:
           type: string
-          example: manager
+          format: email
         token:
           type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hbmFnZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.4TJok9J
-    NewPizza:
-      type: object
-      properties:
-        title:
+        role:
           type: string
-          example: Margherita
-        content:
-          type: string
-          example: Tomate, mozzarella, basilic
-    Pizza:
+          enum: [ADMIN, CUSTOMER, SERVICE_PROVIDER]
+
+    Service:
       type: object
       properties:
         id:
           type: integer
-          example: 1
-        title:
+          format: int64
+        serviceTitle:
           type: string
-          example: Margherita
-        content:
-          type: string
-          example: Tomate, mozzarella, basilic
-    NewDrink:
-      type: object
-      properties:
-        title:
-          type: string
-          example: Coca-Cola
-        image:
-          type: string
-          example: https://upload.wikimedia.org/wikipedia/commons/2/27/Coca_Cola_Flasche_-_Original_Taste.jpg
-        volume:
-          type: number
-          example: 0.33
         price:
           type: number
-          example: 2.5
-    Drink:
+          format: double
+        status:
+          type: string
+          enum: [VALIDATED, PENDING, DENIED, MASKED]
+
+    CreateReservationLineRequest:
+      type: object
+      required: [serviceId]
+      properties:
+        serviceId:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date-time
+
+    CreateReservationRequest:
+      type: object
+      required: [reservationDate, lines]
+      properties:
+        reservationDate:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateReservationLineRequest'
+
+    Reservation:
       type: object
       properties:
         id:
           type: integer
-          example: 1
-        title:
+          format: int64
+        reservationDate:
           type: string
-          example: Coca-Cola
-        image:
+          format: date-time
+        total_price:
+          type: number
+          format: double
+        status:
           type: string
-          example: https://upload.wikimedia.org/wikipedia/commons/2/27/Coca_Cola_Flasche_-_Original_Taste.jpg
-        volume:
-          type: number
-          example: 0.33
-        price:
-          type: number
-          example: 2.5
+          enum: [FUTUR, PAST, DURING, CANCELED]
+
+    ApiError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        fieldErrors:
+          type: object
+          additionalProperties:
+            type: string
+

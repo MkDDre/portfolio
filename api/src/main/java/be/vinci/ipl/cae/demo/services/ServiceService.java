@@ -4,6 +4,8 @@ import be.vinci.ipl.cae.demo.models.entities.Service;
 import be.vinci.ipl.cae.demo.models.entities.ServiceStatus;
 import be.vinci.ipl.cae.demo.models.entities.User;
 import be.vinci.ipl.cae.demo.repositories.ServiceRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public class ServiceService {
     public Service createService(Service service, String userEmail) {
         User author = authService.findByEmail(userEmail);
         if (author == null) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         service.setAuthor(author);
         return serviceRepository.save(service);
@@ -63,7 +65,7 @@ public class ServiceService {
     public List<Service> getMyServices(String userEmail) {
         User author = authService.findByEmail(userEmail);
         if (author == null) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         return serviceRepository.findByAuthor(author);
     }

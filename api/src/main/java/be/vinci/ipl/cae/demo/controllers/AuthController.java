@@ -2,8 +2,10 @@ package be.vinci.ipl.cae.demo.controllers;
 
 import be.vinci.ipl.cae.demo.models.dtos.AuthRequest;
 import be.vinci.ipl.cae.demo.models.dtos.AuthResponse;
+import be.vinci.ipl.cae.demo.models.dtos.RegisterRequest;
 import be.vinci.ipl.cae.demo.models.entities.UserRole;
 import be.vinci.ipl.cae.demo.services.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,12 +19,12 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public AuthResponse register(@RequestBody AuthRequest request) {
+  public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
     return authService.register(request.email, request.password, UserRole.CUSTOMER);
   }
 
   @PostMapping("/login")
-  public AuthResponse login(@RequestBody AuthRequest request) {
+  public AuthResponse login(@Valid @RequestBody AuthRequest request) {
     return authService.login(request.email, request.password);
   }
 }

@@ -3,6 +3,7 @@ package be.vinci.ipl.cae.demo.controllers;
 import be.vinci.ipl.cae.demo.models.dtos.CreateReservationRequest;
 import be.vinci.ipl.cae.demo.models.entities.Reservation;
 import be.vinci.ipl.cae.demo.services.ReservationService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,7 @@ public class ReservationController {
   }
 
   @PostMapping
-  public ResponseEntity<Reservation> createReservation(@RequestBody CreateReservationRequest request,
+  public ResponseEntity<Reservation> createReservation(@Valid @RequestBody CreateReservationRequest request,
 													   Authentication authentication) {
 	Reservation reservation = reservationService.createReservation(request, authentication.getName());
 	return ResponseEntity.status(HttpStatus.CREATED).body(reservation);
