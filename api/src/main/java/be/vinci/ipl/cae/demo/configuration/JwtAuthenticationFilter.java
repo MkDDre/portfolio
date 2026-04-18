@@ -1,7 +1,7 @@
 package be.vinci.ipl.cae.demo.configuration;
 
 import be.vinci.ipl.cae.demo.services.JwtService;
-import be.vinci.ipl.cae.demo.services.UserService;
+import be.vinci.ipl.cae.demo.services.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +19,11 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtService jwtService;
-  private final UserService userService;
+  private final AuthService authService;
 
-  public JwtAuthenticationFilter(JwtService jwtService, UserService userService) {
+  public JwtAuthenticationFilter(JwtService jwtService, AuthService authService) {
     this.jwtService = jwtService;
-    this.userService = userService;
+    this.authService = authService;
   }
 
   @Override
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String email = jwtService.extractUsername(token);
         String role = jwtService.extractRole(token);
 
-        var user = userService.findByEmail(email);
+        var user = authService.findByEmail(email);
 
         if (user != null) {
           var auth = new UsernamePasswordAuthenticationToken(

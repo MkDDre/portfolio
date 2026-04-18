@@ -8,13 +8,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class AuthService {
 
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
-  public UserService(UserRepository userRepository,
+  public AuthService(UserRepository userRepository,
                      BCryptPasswordEncoder passwordEncoder,
                      JwtService jwtService) {
     this.userRepository = userRepository;
