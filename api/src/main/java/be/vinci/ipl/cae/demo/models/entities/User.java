@@ -23,9 +23,20 @@ public class User {
   private Long id;
 
   @Column(nullable = false)
-  private String username;
+  private String email;
+
+  @Column(nullable = false)
+  private String firstName;
+
+  @Column(nullable = false)
+  private String lastName;
 
   @Column(nullable = false)
   private String password;
 
+  @Column(nullable = false)
+  private String phoneNumber;
+
+  @Column(nullable = false)
+  private UserRole role;
 }
