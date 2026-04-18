@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Credentials DTO.
+ * AuthenticatedUser DTO.
  */
 @Data
 @NoArgsConstructor
-public class Credentials {
-
-  private String username;
-  private String password;
+public class AuthResponse {
+  private String email;
+  private String token;
+  public String role;
 }

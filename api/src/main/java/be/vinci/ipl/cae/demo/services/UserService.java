@@ -1,140 +1,68 @@
 package be.vinci.ipl.cae.demo.services;
 
-import be.vinci.ipl.cae.demo.models.dtos.AuthenticatedUser;
+import be.vinci.ipl.cae.demo.models.dtos.AuthResponse;
 import be.vinci.ipl.cae.demo.models.entities.User;
+import be.vinci.ipl.cae.demo.models.entities.UserRole;
 import be.vinci.ipl.cae.demo.repositories.UserRepository;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import java.util.Date;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * User service.
- */
 @Service
 public class UserService {
 
-  private int unusedVariable = 0;
-
-  private static final String jwtSecret = "ilovemypizza!";
-  private static final long lifetimeJwt = 24 * 60 * 60 * 1000; // 24 hours
-
-  private static final Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-
-  private final BCryptPasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
 
-  /**
-   * Constructor.
-   *
-   * @param passwordEncoder the password encoder
-   * @param userRepository  the user repository
-   */
-  public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository) {
-    this.passwordEncoder = passwordEncoder;
+  public UserService(UserRepository userRepository,
+                     BCryptPasswordEncoder passwordEncoder,
+                     JwtService jwtService) {
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtService = jwtService;
   }
 
-  /**
-   * Create a JWT token.
-   *
-   * @param username the username to included in the claim
-   * @return the JWT token
-   */
-  public AuthenticatedUser createJwtToken(String username) {
-    String token = JWT.create()
-        .withIssuer("auth0")
-        .withClaim("username", username)
-        .withIssuedAt(new Date())
-        .withExpiresAt(new Date(System.currentTimeMillis() + lifetimeJwt))
-        .sign(algorithm);
-
-    AuthenticatedUser authenticatedUser = new AuthenticatedUser();
-    authenticatedUser.setUsername(username);
-    authenticatedUser.setToken(token);
-
-    return authenticatedUser;
-  }
-
-  /**
-   * Verify a JWT token.
-   *
-   * @param token the token to verify
-   * @return the username if the token is valid, null otherwise
-   */
-  public String verifyJwtToken(String token) {
-    try {
-      return JWT.require(algorithm).build().verify(token).getClaim("username").asString();
-    } catch (Exception e) {
-      return null;
+  public AuthResponse register(String email, String password, UserRole role) {
+    if (userRepository.findByEmail(email) != null) {
+      throw new RuntimeException("User already exists");
     }
+
+    User user = new User();
+    user.setEmail(email);
+    user.setPassword(passwordEncoder.encode(password));
+    user.setRole(role);
+
+    userRepository.save(user);
+
+    String token = jwtService.generateToken(user);
+    AuthResponse authResponse = new AuthResponse();
+    authResponse.setToken(token);
+    authResponse.setEmail(email);
+    authResponse.setToken(token);
+    return authResponse;
   }
 
-  /**
-   * Login a user.
-   *
-   * @param username the username
-   * @param password the password
-   * @return the authenticated user if the login is successful, null otherwise
-   */
-  public AuthenticatedUser login(String username, String password) {
-    User user = userRepository.findByUsername(username);
+  public AuthResponse login(String email, String password) {
+    User user = userRepository.findByEmail(email);
+
     if (user == null) {
-      return null;
+      throw new RuntimeException("User not found");
     }
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      return null;
+      throw new RuntimeException("Invalid password");
     }
 
-    System.out.println(createJwtToken(username));
+    String token = jwtService.generateToken(user);
+    AuthResponse authResponse = new AuthResponse();
+    authResponse.setToken(token);
+    authResponse.setEmail(email);
+    authResponse.setRole(user.getRole().name());
 
-    return createJwtToken(username);
+    return new AuthResponse();
   }
 
-  /**
-   * Register a new user.
-   *
-   * @param username the username
-   * @param password the password
-   * @return the authenticated user if the registration is successful, null otherwise
-   */
-  public AuthenticatedUser register(String username, String password) {
-    User user = userRepository.findByUsername(username);
-    if (user != null) {
-      return null;
-    }
-
-    createOne(username, password);
-
-    return createJwtToken(username);
+  public User findByEmail(String email) {
+    return userRepository.findByEmail(email);
   }
-
-  /**
-   * Read a user from its username.
-   *
-   * @param username the username
-   * @return the user if it exists, null otherwise
-   */
-  public User readOneFromUsername(String username) {
-    return userRepository.findByUsername(username);
-  }
-
-  /**
-   * Create a new user.
-   *
-   * @param username the username
-   * @param password the password
-   */
-  public void createOne(String username, String password) {
-    String hashedPassword = passwordEncoder.encode(password);
-
-    User user = new User();
-    user.setUsername(username);
-    user.setPassword(hashedPassword);
-
-    userRepository.save(user);
-  }
-
 }
