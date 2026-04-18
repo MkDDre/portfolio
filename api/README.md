@@ -19,22 +19,6 @@ API Spring Boot orientee portfolio pour montrer:
 - PostgreSQL
 - JUnit 5 / Mockito / MockMvc
 
-## Lancer en local
-```powershell
-Set-Location "C:\Users\alexa\projects\portfolio\api"
-$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot"
-$env:Path="$env:JAVA_HOME\bin;$env:Path"
-.\mvnw.cmd spring-boot:run
-```
-
-## Tester
-```powershell
-Set-Location "C:\Users\alexa\projects\portfolio\api"
-$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot"
-$env:Path="$env:JAVA_HOME\bin;$env:Path"
-.\mvnw.cmd test
-```
-
 ## Swagger / OpenAPI
 - UI: `http://localhost:3000/swagger-ui/index.html`
 - Spec JSON: `http://localhost:3000/v3/api-docs`
@@ -49,7 +33,3 @@ $env:Path="$env:JAVA_HOME\bin;$env:Path"
 - `GET /service/my-services` (role `SERVICE_PROVIDER`)
 - `POST /reservation`
 - `PATCH /reservation/{id}/cancel`
-
-## CI
-Le workflow `.github/workflows/ci.yml` execute build + tests + rapport JaCoCo a chaque push/PR.
-
