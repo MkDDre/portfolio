@@ -6,7 +6,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './components/App';
 import HomePage from './components/pages/HomePage';
 import LoginPage from './components/pages/LoginPage';
-import { UserContextProvider } from './contexts/UserContext';
+import { AuthContextProvider } from './contexts/AuthContext';
 
 const router = createBrowserRouter([
   {
@@ -22,9 +22,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <div className="min-h-screen bg-background text-foreground">
-      <UserContextProvider>
+      <AuthContextProvider>
         <RouterProvider router={router} />
-      </UserContextProvider>
+      </AuthContextProvider>
     </div>
   </React.StrictMode>,
 );

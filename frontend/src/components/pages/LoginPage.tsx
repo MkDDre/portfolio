@@ -1,8 +1,8 @@
 // src/components/pages/LoginPage.tsx
 import { useState, SyntheticEvent, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContextType } from '../../types';
-import { UserContext } from '../../contexts/UserContext';
+import { AuthContextType } from '../../types';
+import { AuthContext } from '../../contexts/AuthContext';
 
 // shadcn/ui
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,15 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 const LoginPage = () => {
-  const { loginUser }: UserContextType = useContext(UserContext);
+  const { loginUser }: AuthContextType = useContext(AuthContext);
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
-      await loginUser({ username, password });
+      await loginUser({ email, password });
       navigate('/');
     } catch (err) {
       console.error('LoginPage::error: ', err);
@@ -36,18 +36,18 @@ const LoginPage = () => {
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Username */}
+              {/* Email */}
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.currentTarget.value)}
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.currentTarget.value)}
                   required
-                  placeholder="john.doe"
-                  autoComplete="username"
+                  placeholder="john.doe@example.com"
+                  autoComplete="email"
                 />
               </div>
 

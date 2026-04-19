@@ -1,6 +1,6 @@
-import { AuthenticatedUser, MaybeAuthenticatedUser } from '../types';
+import { AuthResponseDto, MaybeAuthenticatedUser } from '../types';
 
-const storeAuthenticatedUser = (authenticatedUser: AuthenticatedUser) => {
+const storeAuthenticatedUser = (authenticatedUser: AuthResponseDto) => {
   localStorage.setItem('authenticatedUser', JSON.stringify(authenticatedUser));
 };
 

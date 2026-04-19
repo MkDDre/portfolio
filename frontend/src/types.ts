@@ -23,32 +23,47 @@ interface PizzeriaContext {
   addPizza: (newPizza: NewPizza) => Promise<void>;
 }
 
-interface UserContextType {
+interface AuthContextType {
   authenticatedUser: MaybeAuthenticatedUser;
-  registerUser: (newUser: User) => Promise<void>;
-  loginUser: (user: User) => Promise<void>;
+  isAuthenticated: boolean;
+  registerUser: (newUser: RegisterRequestDto) => Promise<void>;
+  loginUser: (credentials: AuthRequestDto) => Promise<void>;
   clearUser: () => void;
 }
 
-interface User {
-  username: string;
+type UserRole = 'ADMIN' | 'CUSTOMER' | 'SERVICE_PROVIDER';
+
+interface AuthRequestDto {
+  email: string;
   password: string;
 }
 
-interface AuthenticatedUser {
-  username: string;
+type RegisterRequestDto = AuthRequestDto;
+
+interface AuthResponseDto {
+  email: string;
   token: string;
+  role: UserRole;
 }
 
-type MaybeAuthenticatedUser = AuthenticatedUser | undefined;
+type MaybeAuthenticatedUser = AuthResponseDto | undefined;
+
+type UserContextType = AuthContextType;
+type User = AuthRequestDto;
+type AuthenticatedUser = AuthResponseDto;
 
 export type {
   Pizza,
   NewPizza,
   Drink,
   PizzeriaContext,
+  UserRole,
+  AuthRequestDto,
+  RegisterRequestDto,
+  AuthResponseDto,
+  MaybeAuthenticatedUser,
+  AuthContextType,
+  UserContextType,
   User,
   AuthenticatedUser,
-  MaybeAuthenticatedUser,
-  UserContextType,
 };
