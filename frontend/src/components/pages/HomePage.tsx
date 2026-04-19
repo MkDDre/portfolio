@@ -35,9 +35,12 @@ const HomePage = () => {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
       <header className="mb-8 space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Services disponibles</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          Services disponibles
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Choisis un service puis clique sur reserver pour l&apos;ajouter au panier.
+          Choisis un service puis clique sur reserver pour l&apos;ajouter au
+          panier.
         </p>
       </header>
 
@@ -59,7 +62,9 @@ const HomePage = () => {
       {error ? (
         <Card className="border-destructive/40">
           <CardHeader>
-            <CardTitle className="text-destructive">Erreur de chargement</CardTitle>
+            <CardTitle className="text-destructive">
+              Erreur de chargement
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-sm">{error}</CardContent>
         </Card>
@@ -68,7 +73,9 @@ const HomePage = () => {
       {!isLoading && !error ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
-            const isInCart = lines.some((line) => line.serviceId === service.id);
+            const isInCart = lines.some(
+              (line) => line.serviceId === service.id,
+            );
 
             return (
               <Card
@@ -77,13 +84,19 @@ const HomePage = () => {
               >
                 <CardHeader className="space-y-3">
                   <div className="flex items-start justify-between gap-4">
-                    <CardTitle className="text-lg">{service.serviceTitle}</CardTitle>
+                    <CardTitle className="text-lg">
+                      {service.serviceTitle}
+                    </CardTitle>
                     <Badge variant="secondary">{service.status}</Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">Service #{service.id}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Service #{service.id}
+                  </p>
                 </CardHeader>
                 <CardContent className="flex items-center justify-between gap-3">
-                  <p className="text-xl font-semibold">{service.price.toFixed(2)} EUR</p>
+                  <p className="text-xl font-semibold">
+                    {service.price.toFixed(2)} EUR
+                  </p>
                   <Button
                     onClick={() => addLine(service)}
                     disabled={isInCart}

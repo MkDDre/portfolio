@@ -85,7 +85,9 @@ const RegisterPage = () => {
                 />
               </div>
 
-              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              {error ? (
+                <p className="text-sm text-destructive">{error}</p>
+              ) : null}
 
               <Button type="submit" className="w-full">
                 Creer mon compte

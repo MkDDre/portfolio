@@ -62,9 +62,12 @@ const MyReservationsPage = () => {
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
       <header className="mb-6 space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Mes reservations</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          Mes reservations
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Retrouve toutes tes reservations, de la plus recente a la plus ancienne.
+          Retrouve toutes tes reservations, de la plus recente a la plus
+          ancienne.
         </p>
       </header>
 
@@ -106,7 +109,9 @@ const MyReservationsPage = () => {
             <Card key={reservation.id}>
               <CardHeader className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
-                  <CardTitle className="text-lg">Reservation #{reservation.id}</CardTitle>
+                  <CardTitle className="text-lg">
+                    Reservation #{reservation.id}
+                  </CardTitle>
                   <Badge variant={getStatusVariant(reservation.status)}>
                     {reservation.status}
                   </Badge>
@@ -119,7 +124,9 @@ const MyReservationsPage = () => {
                 </p>
                 <p>
                   <span className="text-muted-foreground">Total: </span>
-                  <span className="font-semibold">{reservation.total_price.toFixed(2)} EUR</span>
+                  <span className="font-semibold">
+                    {reservation.total_price.toFixed(2)} EUR
+                  </span>
                 </p>
               </CardContent>
             </Card>

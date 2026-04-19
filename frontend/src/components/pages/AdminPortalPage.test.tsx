@@ -11,7 +11,9 @@ const mocks = vi.hoisted(() => ({
     authenticatedUser: {
       role: 'ADMIN' as 'ADMIN' | 'CUSTOMER' | 'SERVICE_PROVIDER',
       token: 'admin-token',
-    } as { role: 'ADMIN' | 'CUSTOMER' | 'SERVICE_PROVIDER'; token: string } | undefined,
+    } as
+      | { role: 'ADMIN' | 'CUSTOMER' | 'SERVICE_PROVIDER'; token: string }
+      | undefined,
   },
 }));
 
@@ -43,7 +45,10 @@ describe('AdminPortalPage', () => {
   });
 
   it('shows access restriction for non admin users', () => {
-    mocks.state.authenticatedUser = { role: 'CUSTOMER', token: 'customer-token' };
+    mocks.state.authenticatedUser = {
+      role: 'CUSTOMER',
+      token: 'customer-token',
+    };
 
     render(
       <MemoryRouter>

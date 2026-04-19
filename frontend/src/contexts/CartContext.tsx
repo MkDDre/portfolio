@@ -1,6 +1,10 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
 import { CartContextType, CartLine, ServiceDto } from '../types';
-import { clearCartLines, getCartLines, storeCartLines } from '../utils/cartSession';
+import {
+  clearCartLines,
+  getCartLines,
+  storeCartLines,
+} from '../utils/cartSession';
 
 const defaultCartContext: CartContextType = {
   lines: [],
@@ -36,7 +40,9 @@ const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
   const removeLine = (serviceId: number) => {
     setLines((currentLines) => {
-      const nextLines = currentLines.filter((line) => line.serviceId !== serviceId);
+      const nextLines = currentLines.filter(
+        (line) => line.serviceId !== serviceId,
+      );
       storeCartLines(nextLines);
       return nextLines;
     });

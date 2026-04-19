@@ -16,18 +16,35 @@ const createService = async (
 ): Promise<ServiceDto> =>
   postJson<ServiceDto, CreateServiceRequestDto>('/api/service', payload, token);
 
-const validateService = async (serviceId: number, token: string): Promise<ServiceDto> =>
+const validateService = async (
+  serviceId: number,
+  token: string,
+): Promise<ServiceDto> =>
   patchJson<ServiceDto, never>(
     `/api/service/${serviceId}/validate`,
     undefined,
     token,
   );
 
-const denyService = async (serviceId: number, token: string): Promise<ServiceDto> =>
-  patchJson<ServiceDto, never>(`/api/service/${serviceId}/deny`, undefined, token);
+const denyService = async (
+  serviceId: number,
+  token: string,
+): Promise<ServiceDto> =>
+  patchJson<ServiceDto, never>(
+    `/api/service/${serviceId}/deny`,
+    undefined,
+    token,
+  );
 
-const maskService = async (serviceId: number, token: string): Promise<ServiceDto> =>
-  patchJson<ServiceDto, never>(`/api/service/${serviceId}/mask`, undefined, token);
+const maskService = async (
+  serviceId: number,
+  token: string,
+): Promise<ServiceDto> =>
+  patchJson<ServiceDto, never>(
+    `/api/service/${serviceId}/mask`,
+    undefined,
+    token,
+  );
 
 export {
   getValidatedServices,

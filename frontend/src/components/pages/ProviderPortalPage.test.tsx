@@ -11,7 +11,9 @@ const mocks = vi.hoisted(() => ({
     authenticatedUser: {
       role: 'SERVICE_PROVIDER' as 'SERVICE_PROVIDER' | 'CUSTOMER' | 'ADMIN',
       token: 'provider-token',
-    } as { role: 'SERVICE_PROVIDER' | 'CUSTOMER' | 'ADMIN'; token: string } | undefined,
+    } as
+      | { role: 'SERVICE_PROVIDER' | 'CUSTOMER' | 'ADMIN'; token: string }
+      | undefined,
   },
 }));
 
@@ -30,7 +32,10 @@ vi.mock('../../contexts/useAuthContext', () => ({
 describe('ProviderPortalPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.state.authenticatedUser = { role: 'SERVICE_PROVIDER', token: 'provider-token' };
+    mocks.state.authenticatedUser = {
+      role: 'SERVICE_PROVIDER',
+      token: 'provider-token',
+    };
     mocks.getMyServicesMock.mockResolvedValue([]);
   });
 
@@ -62,7 +67,9 @@ describe('ProviderPortalPage', () => {
       target: { value: '79.99' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Soumettre le service' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Soumettre le service' }),
+    );
 
     await waitFor(() => {
       expect(mocks.createServiceMock).toHaveBeenCalledWith(

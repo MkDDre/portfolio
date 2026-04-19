@@ -20,7 +20,9 @@ const AdminPortalPage = () => {
 
     try {
       setIsLoading(true);
-      const services = await serviceApi.getPendingServices(authenticatedUser.token);
+      const services = await serviceApi.getPendingServices(
+        authenticatedUser.token,
+      );
       setPendingServices(services);
     } catch (err) {
       setError(
@@ -56,9 +58,7 @@ const AdminPortalPage = () => {
       );
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Action de moderation impossible.',
+        err instanceof Error ? err.message : 'Action de moderation impossible.',
       );
     }
   };
@@ -96,8 +96,8 @@ const AdminPortalPage = () => {
             <CardTitle>Acces reserve admin</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Ton role actuel est {authenticatedUser.role}. Ce portail est reserve aux
-            comptes ADMIN.
+            Ton role actuel est {authenticatedUser.role}. Ce portail est reserve
+            aux comptes ADMIN.
           </CardContent>
         </Card>
       </section>
@@ -111,7 +111,9 @@ const AdminPortalPage = () => {
           <CardTitle>Portail admin</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-4">
-          <Badge variant="secondary">Demandes en attente: {stats.totalPending}</Badge>
+          <Badge variant="secondary">
+            Demandes en attente: {stats.totalPending}
+          </Badge>
           <p className="text-sm text-muted-foreground">
             Validation ou rejet des commandes de publication des services.
           </p>
@@ -123,7 +125,9 @@ const AdminPortalPage = () => {
           <CardTitle>Commandes a moderer</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p className="text-sm text-muted-foreground">Chargement...</p> : null}
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">Chargement...</p>
+          ) : null}
 
           {!isLoading && pendingServices.length === 0 ? (
             <p className="text-sm text-muted-foreground">
@@ -139,7 +143,8 @@ const AdminPortalPage = () => {
               <div>
                 <p className="font-medium">{service.serviceTitle}</p>
                 <p className="text-sm text-muted-foreground">
-                  {service.price.toFixed(2)} EUR - Auteur: {service.author?.email ?? 'N/A'}
+                  {service.price.toFixed(2)} EUR - Auteur:{' '}
+                  {service.author?.email ?? 'N/A'}
                 </p>
               </div>
 

@@ -3,7 +3,9 @@ import { postJson } from './http';
 
 const AUTH_BASE_PATH = '/api/auth';
 
-const register = async (payload: RegisterRequestDto): Promise<AuthResponseDto> =>
+const register = async (
+  payload: RegisterRequestDto,
+): Promise<AuthResponseDto> =>
   postJson<AuthResponseDto, RegisterRequestDto>(
     `${AUTH_BASE_PATH}/register`,
     payload,

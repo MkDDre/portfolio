@@ -8,7 +8,9 @@ const mocks = vi.hoisted(() => ({
   state: {
     authState: {
       isAuthenticated: true,
-      authenticatedUser: { token: 'token-abc' } as { token: string } | undefined,
+      authenticatedUser: { token: 'token-abc' } as
+        | { token: string }
+        | undefined,
     },
   },
 }));
@@ -33,7 +35,10 @@ describe('MyReservationsPage', () => {
   });
 
   it('redirects to login when unauthenticated', () => {
-    mocks.state.authState = { isAuthenticated: false, authenticatedUser: undefined };
+    mocks.state.authState = {
+      isAuthenticated: false,
+      authenticatedUser: undefined,
+    };
 
     render(
       <MemoryRouter initialEntries={['/my-reservations']}>

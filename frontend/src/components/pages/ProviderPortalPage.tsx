@@ -25,11 +25,15 @@ const ProviderPortalPage = () => {
 
     try {
       setIsLoading(true);
-      const myServices = await serviceApi.getMyServices(authenticatedUser.token);
+      const myServices = await serviceApi.getMyServices(
+        authenticatedUser.token,
+      );
       setServices(myServices);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Impossible de charger tes services.',
+        err instanceof Error
+          ? err.message
+          : 'Impossible de charger tes services.',
       );
     } finally {
       setIsLoading(false);
@@ -83,7 +87,9 @@ const ProviderPortalPage = () => {
       await refreshMyServices();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Impossible de masquer le service.',
+        err instanceof Error
+          ? err.message
+          : 'Impossible de masquer le service.',
       );
     }
   };
@@ -96,7 +102,9 @@ const ProviderPortalPage = () => {
             <CardTitle>Connexion requise</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>Connecte-toi avec un compte prestataire pour acceder au portail.</p>
+            <p>
+              Connecte-toi avec un compte prestataire pour acceder au portail.
+            </p>
             <Button asChild>
               <Link to="/login">Aller a la connexion</Link>
             </Button>
@@ -114,8 +122,8 @@ const ProviderPortalPage = () => {
             <CardTitle>Acces reserve prestataires</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Ton role actuel est {authenticatedUser.role}. Ce portail est reserve aux
-            comptes SERVICE_PROVIDER.
+            Ton role actuel est {authenticatedUser.role}. Ce portail est reserve
+            aux comptes SERVICE_PROVIDER.
           </CardContent>
         </Card>
       </section>
@@ -167,7 +175,9 @@ const ProviderPortalPage = () => {
           <CardTitle>Mes services</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p className="text-sm text-muted-foreground">Chargement...</p> : null}
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">Chargement...</p>
+          ) : null}
 
           {!isLoading && visibleServices.length === 0 ? (
             <p className="text-sm text-muted-foreground">

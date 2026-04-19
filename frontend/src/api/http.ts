@@ -20,7 +20,9 @@ const getJson = async <TResponse>(
   });
 
   if (!response.ok) {
-    throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+    throw new Error(
+      `fetch error : ${response.status} : ${response.statusText}`,
+    );
   }
 
   return response.json() as Promise<TResponse>;
@@ -38,7 +40,9 @@ const postJson = async <TResponse, TBody>(
   });
 
   if (!response.ok) {
-    throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+    throw new Error(
+      `fetch error : ${response.status} : ${response.statusText}`,
+    );
   }
 
   return response.json() as Promise<TResponse>;
@@ -56,7 +60,9 @@ const patchJson = async <TResponse, TBody>(
   });
 
   if (!response.ok) {
-    throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+    throw new Error(
+      `fetch error : ${response.status} : ${response.statusText}`,
+    );
   }
 
   return response.json() as Promise<TResponse>;

@@ -40,9 +40,10 @@ vi.mock('../../contexts/useCartContext', () => ({
 }));
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>(
-    'react-router-dom',
-  );
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom',
+    );
   return {
     ...actual,
     useNavigate: () => mocks.navigateMock,
@@ -108,9 +109,7 @@ describe('CartPage', () => {
     await waitFor(() => {
       expect(mocks.createReservationMock).toHaveBeenCalled();
       expect(mocks.clearCartMock).toHaveBeenCalled();
-      expect(
-        screen.getByText('Reservation creee #77 (FUTUR)'),
-      ).toBeTruthy();
+      expect(screen.getByText('Reservation creee #77 (FUTUR)')).toBeTruthy();
     });
   });
 });

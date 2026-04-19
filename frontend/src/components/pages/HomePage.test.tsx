@@ -57,7 +57,9 @@ describe('HomePage', () => {
 
     render(<HomePage />);
 
-    const reserveButton = await screen.findByRole('button', { name: 'Reserver' });
+    const reserveButton = await screen.findByRole('button', {
+      name: 'Reserver',
+    });
     fireEvent.click(reserveButton);
 
     expect(mocks.addLineMock).toHaveBeenCalledWith(

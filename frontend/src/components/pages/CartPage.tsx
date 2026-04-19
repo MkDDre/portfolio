@@ -20,7 +20,9 @@ const CartPage = () => {
   const navigate = useNavigate();
   const { authenticatedUser } = useAuthContext();
   const { lines, totalPrice, removeLine, clearCart } = useCartContext();
-  const [reservationDate, setReservationDate] = useState(getDefaultReservationDate);
+  const [reservationDate, setReservationDate] = useState(
+    getDefaultReservationDate,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reservation, setReservation] = useState<ReservationDto | null>(null);
@@ -88,7 +90,9 @@ const CartPage = () => {
               >
                 <div>
                   <p className="font-medium">{line.serviceTitle}</p>
-                  <p className="text-sm text-muted-foreground">Service #{line.serviceId}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Service #{line.serviceId}
+                  </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <p className="font-semibold">{line.price.toFixed(2)} EUR</p>
