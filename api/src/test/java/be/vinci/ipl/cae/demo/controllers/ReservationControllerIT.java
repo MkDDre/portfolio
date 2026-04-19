@@ -18,11 +18,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -105,6 +107,34 @@ class ReservationControllerIT {
         .andExpect(jsonPath("$.status").value("CANCELED"));
 
     verify(reservationService).cancelReservation(21L, "client@test.com");
+  }
+
+  @Test
+  @WithMockUser(username = "client@test.com", roles = "CUSTOMER")
+  void getMyReservationsShouldReturnOk() throws Exception {
+    Reservation first = new Reservation();
+    first.setId(10L);
+    first.setStatus(ReservationStatus.FUTUR);
+    first.setTotal_price(70.0);
+    first.setReservationDate(LocalDateTime.of(2026, 7, 2, 14, 0));
+
+    Reservation second = new Reservation();
+    second.setId(9L);
+    second.setStatus(ReservationStatus.CANCELED);
+    second.setTotal_price(40.0);
+    second.setReservationDate(LocalDateTime.of(2026, 6, 20, 9, 0));
+
+    when(reservationService.getMyReservations("client@test.com"))
+        .thenReturn(List.of(first, second));
+
+    mockMvc.perform(get("/reservation/my"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].id").value(10L))
+        .andExpect(jsonPath("$[0].status").value("FUTUR"))
+        .andExpect(jsonPath("$[1].id").value(9L))
+        .andExpect(jsonPath("$[1].status").value("CANCELED"));
+
+    verify(reservationService).getMyReservations("client@test.com");
   }
 
   @Test

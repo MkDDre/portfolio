@@ -99,6 +99,11 @@ public class ReservationService {
 	return reservationRepository.save(reservation);
   }
 
+  public List<Reservation> getMyReservations(String userEmail) {
+	User client = getAuthenticatedUser(userEmail);
+	return reservationRepository.findAllByClientOrderByReservationDateDesc(client);
+  }
+
   private User getAuthenticatedUser(String userEmail) {
 	User client = authService.findByEmail(userEmail);
 	if (client == null) {

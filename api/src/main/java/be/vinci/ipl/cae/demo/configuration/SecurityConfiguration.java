@@ -26,6 +26,8 @@ public class SecurityConfiguration {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
+                  .requestMatchers("/service/validated/all").permitAll()
+                  .requestMatchers("/service/{id}").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/provider/**").hasRole("SERVICE_PROVIDER")
                     .anyRequest().authenticated()

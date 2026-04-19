@@ -60,7 +60,7 @@ interface CreateReservationRequestDto {
   lines: CreateReservationLineRequestDto[];
 }
 
-type ReservationStatus = 'FUTUR' | 'CANCELED';
+type ReservationStatus = 'FUTUR' | 'PAST' | 'DURING' | 'CANCELED';
 
 interface ReservationDto {
   id: number;

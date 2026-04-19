@@ -1,5 +1,5 @@
 import { CreateReservationRequestDto, ReservationDto } from '../types';
-import { patchJson, postJson } from './http';
+import { getJson, patchJson, postJson } from './http';
 
 const createReservation = async (
   payload: CreateReservationRequestDto,
@@ -21,4 +21,7 @@ const cancelReservation = async (
     token,
   );
 
-export { createReservation, cancelReservation };
+const getMyReservations = async (token: string): Promise<ReservationDto[]> =>
+  getJson<ReservationDto[]>('/api/reservation/my', token);
+
+export { createReservation, cancelReservation, getMyReservations };

@@ -28,6 +28,11 @@ const NavBar: React.FC = () => {
             <NavLink to="/cart" className={linkClassName}>
               Panier
             </NavLink>
+            {isAuthenticated ? (
+              <NavLink to="/my-reservations" className={linkClassName}>
+                Mes reservations
+              </NavLink>
+            ) : null}
             {authenticatedUser?.role === 'SERVICE_PROVIDER' ? (
               <NavLink to="/provider" className={linkClassName}>
                 Portail Provider

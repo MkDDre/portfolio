@@ -30,6 +30,7 @@ public class Service {
     private double price;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ServiceStatus status;
 
 }

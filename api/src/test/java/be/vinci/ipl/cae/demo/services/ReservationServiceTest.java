@@ -147,5 +147,24 @@ class ReservationServiceTest {
 
     assertTrue(exception.getReason().contains("48h"));
   }
+
+  @Test
+  void getMyReservationsShouldReturnUserReservations() {
+    Reservation first = new Reservation();
+    first.setId(3L);
+
+    Reservation second = new Reservation();
+    second.setId(2L);
+
+    when(authService.findByEmail("client@test.com")).thenReturn(user);
+    when(reservationRepository.findAllByClientOrderByReservationDateDesc(user))
+        .thenReturn(List.of(first, second));
+
+    List<Reservation> reservations = reservationService.getMyReservations("client@test.com");
+
+    assertEquals(2, reservations.size());
+    assertEquals(3L, reservations.get(0).getId());
+    verify(reservationRepository).findAllByClientOrderByReservationDateDesc(user);
+  }
 }
 

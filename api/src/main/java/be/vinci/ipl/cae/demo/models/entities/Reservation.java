@@ -30,5 +30,6 @@ public class Reservation {
     private double total_price;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 }
