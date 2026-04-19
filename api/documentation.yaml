@@ -221,6 +221,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
 
+  /reservation/my:
+    get:
+      tags: [Reservation]
+      summary: Lister mes reservations
+      description: Retourne les reservations de l'utilisateur authentifie, triees par date decroissante.
+      responses:
+        '200':
+          description: Liste des reservations de l'utilisateur courant
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+        '401':
+          description: Non authentifie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
 components:
   securitySchemes:
     bearerAuth:
