@@ -23,6 +23,54 @@ interface PizzeriaContext {
   addPizza: (newPizza: NewPizza) => Promise<void>;
 }
 
+type ServiceStatus = 'PENDING' | 'VALIDATED' | 'REJECTED';
+
+interface ServiceAuthor {
+  id?: number;
+  email: string;
+}
+
+interface ServiceDto {
+  id: number;
+  author?: ServiceAuthor;
+  serviceTitle: string;
+  price: number;
+  status: ServiceStatus;
+}
+
+interface CartLine {
+  serviceId: number;
+  serviceTitle: string;
+  price: number;
+}
+
+interface CreateReservationLineRequestDto {
+  serviceId: number;
+  date?: string;
+}
+
+interface CreateReservationRequestDto {
+  reservationDate: string;
+  lines: CreateReservationLineRequestDto[];
+}
+
+type ReservationStatus = 'FUTUR' | 'CANCELED';
+
+interface ReservationDto {
+  id: number;
+  reservationDate: string;
+  total_price: number;
+  status: ReservationStatus;
+}
+
+interface CartContextType {
+  lines: CartLine[];
+  totalPrice: number;
+  addLine: (service: ServiceDto) => void;
+  removeLine: (serviceId: number) => void;
+  clearCart: () => void;
+}
+
 interface AuthContextType {
   authenticatedUser: MaybeAuthenticatedUser;
   isAuthenticated: boolean;
@@ -57,6 +105,15 @@ export type {
   NewPizza,
   Drink,
   PizzeriaContext,
+  ServiceStatus,
+  ServiceAuthor,
+  ServiceDto,
+  CartLine,
+  CreateReservationLineRequestDto,
+  CreateReservationRequestDto,
+  ReservationStatus,
+  ReservationDto,
+  CartContextType,
   UserRole,
   AuthRequestDto,
   RegisterRequestDto,

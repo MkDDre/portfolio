@@ -1,41 +1,48 @@
-// src/components/pages/LoginPage.tsx
-import { useState, SyntheticEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { SyntheticEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/useAuthContext';
-
-// shadcn/ui
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-const LoginPage = () => {
-  const { loginUser } = useAuthContext();
+const RegisterPage = () => {
   const navigate = useNavigate();
+  const { registerUser } = useAuthContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: SyntheticEvent) => {
+    event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
     try {
-      await loginUser({ email, password });
+      setError(null);
+      await registerUser({ email, password });
       navigate('/');
     } catch (err) {
-      console.error('LoginPage::error: ', err);
+      setError(
+        err instanceof Error ? err.message : 'Impossible de creer le compte.',
+      );
     }
   };
 
   return (
     <section className="py-8">
-      <div className="container mx-auto px-4 flex justify-center">
+      <div className="container mx-auto flex justify-center px-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Connectez un utilisateur</CardTitle>
+            <CardTitle>Creer un compte</CardTitle>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -50,7 +57,6 @@ const LoginPage = () => {
                 />
               </div>
 
-              {/* Password */}
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -61,20 +67,29 @@ const LoginPage = () => {
                   onChange={(e) => setPassword(e.currentTarget.value)}
                   required
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                 />
               </div>
 
-              <Button type="submit" className="w-full">
-                S'authentifier
-              </Button>
+              <div className="grid gap-2">
+                <Label htmlFor="confirmPassword">Confirmer le password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+                  required
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                />
+              </div>
 
-              <p className="text-center text-sm text-muted-foreground">
-                Pas encore de compte ?{' '}
-                <Link className="font-medium underline" to="/register">
-                  Inscris-toi
-                </Link>
-              </p>
+              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+
+              <Button type="submit" className="w-full">
+                Creer mon compte
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -83,4 +98,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

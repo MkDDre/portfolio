@@ -57,6 +57,15 @@ public class ServiceService {
     }
 
     /**
+     * Get all pending services.
+     *
+     * @return list of pending services
+     */
+    public List<Service> getPendingServices() {
+        return serviceRepository.findByStatus(ServiceStatus.PENDING);
+    }
+
+    /**
      * Get all services created by the authenticated user.
      *
      * @param userEmail the email of the authenticated user
@@ -68,5 +77,62 @@ public class ServiceService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         return serviceRepository.findByAuthor(author);
+    }
+
+    /**
+     * Validate a pending service.
+     *
+     * @param serviceId service id
+     * @return updated service
+     */
+    public Service validateService(Long serviceId) {
+        return updatePendingServiceStatus(serviceId, ServiceStatus.VALIDATED);
+    }
+
+    /**
+     * Deny a pending service.
+     *
+     * @param serviceId service id
+     * @return updated service
+     */
+    public Service denyService(Long serviceId) {
+        return updatePendingServiceStatus(serviceId, ServiceStatus.DENIED);
+    }
+
+    /**
+     * Mask one service created by the authenticated provider.
+     *
+     * @param serviceId service id
+     * @param userEmail authenticated user email
+     * @return updated service
+     */
+    public Service maskMyService(Long serviceId, String userEmail) {
+        User user = authService.findByEmail(userEmail);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        Service service = getServiceOrThrow(serviceId);
+        if (service.getAuthor() == null || !service.getAuthor().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only mask your own services");
+        }
+
+        service.setStatus(ServiceStatus.MASKED);
+        return serviceRepository.save(service);
+    }
+
+    private Service updatePendingServiceStatus(Long serviceId, ServiceStatus targetStatus) {
+        Service service = getServiceOrThrow(serviceId);
+        if (service.getStatus() != ServiceStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only pending services can be moderated");
+        }
+
+        service.setStatus(targetStatus);
+        return serviceRepository.save(service);
+    }
+
+    private Service getServiceOrThrow(Long serviceId) {
+        return serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found"));
     }
 }

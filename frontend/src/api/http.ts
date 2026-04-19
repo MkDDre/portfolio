@@ -1,16 +1,23 @@
-const buildJsonOptions = (method: 'POST' | 'PUT' | 'PATCH', body: unknown) => ({
-  method,
-  headers: {
+const buildHeaders = (token?: string): HeadersInit => {
+  const headers: HeadersInit = {
     'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(body),
-});
+  };
 
-const postJson = async <TResponse, TBody>(
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+};
+
+const getJson = async <TResponse>(
   path: string,
-  body: TBody,
+  token?: string,
 ): Promise<TResponse> => {
-  const response = await fetch(path, buildJsonOptions('POST', body));
+  const response = await fetch(path, {
+    method: 'GET',
+    headers: buildHeaders(token),
+  });
 
   if (!response.ok) {
     throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
@@ -19,4 +26,40 @@ const postJson = async <TResponse, TBody>(
   return response.json() as Promise<TResponse>;
 };
 
-export { postJson };
+const postJson = async <TResponse, TBody>(
+  path: string,
+  body: TBody,
+  token?: string,
+): Promise<TResponse> => {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: buildHeaders(token),
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+  }
+
+  return response.json() as Promise<TResponse>;
+};
+
+const patchJson = async <TResponse, TBody>(
+  path: string,
+  body?: TBody,
+  token?: string,
+): Promise<TResponse> => {
+  const response = await fetch(path, {
+    method: 'PATCH',
+    headers: buildHeaders(token),
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+
+  if (!response.ok) {
+    throw new Error(`fetch error : ${response.status} : ${response.statusText}`);
+  }
+
+  return response.json() as Promise<TResponse>;
+};
+
+export { getJson, postJson, patchJson };
