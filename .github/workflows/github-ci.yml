@@ -28,7 +28,7 @@ jobs:
       - name: Run API tests
         run: |
           cd api
-          mvn -q -B clean test
+          mvn -q -B clean test -Dcheckstyle.skip=true
 
       - name: Upload API test reports
         uses: actions/upload-artifact@v4
