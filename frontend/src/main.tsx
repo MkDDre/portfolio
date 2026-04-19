@@ -8,6 +8,8 @@ import HomePage from './components/pages/HomePage';
 import LoginPage from './components/pages/LoginPage';
 import CartPage from './components/pages/CartPage';
 import RegisterPage from './components/pages/RegisterPage';
+import ProviderPortalPage from './components/pages/ProviderPortalPage';
+import AdminPortalPage from './components/pages/AdminPortalPage';
 import { AuthContextProvider } from './contexts/AuthContext';
 import { CartContextProvider } from './contexts/CartContext';
 
@@ -20,6 +22,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
       { path: 'cart', element: <CartPage /> },
+      { path: 'provider', element: <ProviderPortalPage /> },
+      { path: 'admin', element: <AdminPortalPage /> },
     ],
   },
 ]);

@@ -28,6 +28,16 @@ const NavBar: React.FC = () => {
             <NavLink to="/cart" className={linkClassName}>
               Panier
             </NavLink>
+            {authenticatedUser?.role === 'SERVICE_PROVIDER' ? (
+              <NavLink to="/provider" className={linkClassName}>
+                Portail Provider
+              </NavLink>
+            ) : null}
+            {authenticatedUser?.role === 'ADMIN' ? (
+              <NavLink to="/admin" className={linkClassName}>
+                Portail Admin
+              </NavLink>
+            ) : null}
           </div>
         </div>
 

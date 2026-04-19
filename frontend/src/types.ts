@@ -23,7 +23,7 @@ interface PizzeriaContext {
   addPizza: (newPizza: NewPizza) => Promise<void>;
 }
 
-type ServiceStatus = 'PENDING' | 'VALIDATED' | 'REJECTED';
+type ServiceStatus = 'PENDING' | 'VALIDATED' | 'DENIED' | 'MASKED';
 
 interface ServiceAuthor {
   id?: number;
@@ -36,6 +36,12 @@ interface ServiceDto {
   serviceTitle: string;
   price: number;
   status: ServiceStatus;
+}
+
+interface CreateServiceRequestDto {
+  serviceTitle: string;
+  price: number;
+  status: Extract<ServiceStatus, 'PENDING'>;
 }
 
 interface CartLine {
@@ -108,6 +114,7 @@ export type {
   ServiceStatus,
   ServiceAuthor,
   ServiceDto,
+  CreateServiceRequestDto,
   CartLine,
   CreateReservationLineRequestDto,
   CreateReservationRequestDto,
