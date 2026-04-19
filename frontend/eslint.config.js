@@ -23,6 +23,7 @@ export default [
     plugins: { '@typescript-eslint': tseslint },
     rules: {
       ...tseslint.configs.recommended.rules,
+      'no-undef': 'off',
     },
   },
 
@@ -45,7 +46,14 @@ export default [
       'require-jsdoc': 'off',
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        {
+          allowConstantExport: true,
+          allowExportNames: [
+            'buttonVariants',
+            'badgeVariants',
+            'navigationMenuTriggerStyle',
+          ],
+        },
       ],
     },
   },

@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { serviceApi } from '../../api';
 import { useAuthContext } from '../../contexts/useAuthContext';
@@ -20,7 +20,7 @@ const ProviderPortalPage = () => {
 
   const isProvider = authenticatedUser?.role === 'SERVICE_PROVIDER';
 
-  const refreshMyServices = async () => {
+  const refreshMyServices = useCallback(async () => {
     if (!authenticatedUser || !isProvider) return;
 
     try {
@@ -38,11 +38,11 @@ const ProviderPortalPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authenticatedUser, isProvider]);
 
   useEffect(() => {
     refreshMyServices();
-  }, [authenticatedUser?.token]);
+  }, [refreshMyServices]);
 
   const visibleServices = useMemo(
     () => services.slice().sort((a, b) => b.id - a.id),

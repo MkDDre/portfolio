@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { serviceApi } from '../../api';
 import { useAuthContext } from '../../contexts/useAuthContext';
@@ -15,7 +15,7 @@ const AdminPortalPage = () => {
 
   const isAdmin = authenticatedUser?.role === 'ADMIN';
 
-  const refreshPendingServices = async () => {
+  const refreshPendingServices = useCallback(async () => {
     if (!authenticatedUser || !isAdmin) return;
 
     try {
@@ -33,11 +33,11 @@ const AdminPortalPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authenticatedUser, isAdmin]);
 
   useEffect(() => {
     refreshPendingServices();
-  }, [authenticatedUser?.token]);
+  }, [refreshPendingServices]);
 
   const handleModeration = async (
     serviceId: number,
